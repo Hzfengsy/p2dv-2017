@@ -29,6 +29,7 @@ class Prepare:
         # Move client to the specific directory
         ai_name = 'ai_' + str(self.ai['_id'])
         self.abspath = path.join(const.AI_SAVE_DIRECTORY, ai_name)
+        print target, self.abspath
         shutil.move(target, self.abspath)
         return True
 

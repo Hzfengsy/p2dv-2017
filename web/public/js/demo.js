@@ -6,6 +6,8 @@ Demo = {
 	playing   : undefined,
 	pause     : undefined,
 	timeoutID : undefined,
+	hight     : 4,
+	width     : 8,
 
 	// DOM:
 	board     : undefined,
@@ -30,9 +32,9 @@ Demo = {
 
 	drawTable: function drawTable() {
 		var table = $('<table id="chess-board">');
-		for (var i = 0; i < 4; ++i) {
+		for (var i = 0; i < Demo.hight; ++i) {
 			var tr = $('<tr id="row-' + i + '">');
-			for (var j = 0; j < 8; ++j) {
+			for (var j = 0; j < Demo.width; ++j) {
 				var td = $('<td id="box-' + i + '-' + j + '">');
 				td.data('row', i);
 				td.data('col', j);
@@ -45,8 +47,8 @@ Demo = {
 	},
 
 	putChess: function putChess() {
-		for (var i = 0; i < 4; ++i) {
-			for (var j = 0; j < 8; ++j) {
+		for (var i = 0; i < Demo.hight; ++i) {
+			for (var j = 0; j < Demo.width; ++j) {
 				Demo.getBox(i, j).attr('class', 'img-chess img-blank');
 			}
 		}
@@ -77,8 +79,8 @@ Demo = {
 	},
 
 	flushBoard : function flushBoard() {
-		for (var i = 0; i < 4; ++i) {
-			for (var j = 0; j < 8; ++j) {
+		for (var i = 0; i < Demo.hight; ++i) {
+			for (var j = 0; j < Demo.width; ++j) {
 				var img = Demo.getImg(oldBoard[Demo.playing][i][j]);
 				Demo.getBox(i, j).attr('class', img);
 			}
@@ -187,8 +189,8 @@ Demo = {
 
 	prepare : function prepare() {
 		var curBoard = [[],[],[],[]];
-		for (var i = 0; i < 4; ++i) {
-			for (var j = 0; j < 8; ++j) {
+		for (var i = 0; i < Demo.hight; ++i) {
+			for (var j = 0; j < Demo.width; ++j) {
 				if (Demo.data["init-board"][i][j].color == 0) {
 					curBoard[i].push([Demo.data["init-board"][i][j].kind + 1, true]);
 				} else if (Demo.data["init-board"][i][j].color == 1) {
