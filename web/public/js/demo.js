@@ -38,6 +38,7 @@ Demo = {
 				var td = $('<td id="box-' + i + '-' + j + '">');
 				td.data('row', i);
 				td.data('col', j);
+				td.board;
 				tr.append(td);
 			}
 			table.append(tr);
@@ -61,20 +62,20 @@ Demo = {
 		if (chess[1] === true && Demo.hideChess === true) {
 			return 'img-chess img-blank';
 		} else {
-			if (chess[0] === -7) {return 'img-chess img-black-7';}
-			if (chess[0] === -6) {return 'img-chess img-black-6';}
-			if (chess[0] === -5) {return 'img-chess img-black-5';}
-			if (chess[0] === -4) {return 'img-chess img-black-4';}
-			if (chess[0] === -3) {return 'img-chess img-black-3';}
-			if (chess[0] === -2) {return 'img-chess img-black-2';}
-			if (chess[0] === -1) {return 'img-chess img-black-1';}
-			if (chess[0] ===  7) {return 'img-chess img-red-7';}
-			if (chess[0] ===  6) {return 'img-chess img-red-6';}
-			if (chess[0] ===  5) {return 'img-chess img-red-5';}
-			if (chess[0] ===  4) {return 'img-chess img-red-4';}
-			if (chess[0] ===  3) {return 'img-chess img-red-3';}
-			if (chess[0] ===  2) {return 'img-chess img-red-2';}
-			if (chess[0] ===  1) {return 'img-chess img-red-1';}
+			if (chess[0] === -7) {return 'img-chess img-blue';}
+			if (chess[0] === -6) {return 'img-chess img-blue';}
+			if (chess[0] === -5) {return 'img-chess img-blue';}
+			if (chess[0] === -4) {return 'img-chess img-blue';}
+			if (chess[0] === -3) {return 'img-chess img-blue';}
+			if (chess[0] === -2) {return 'img-chess img-blue';}
+			if (chess[0] === -1) {return 'img-chess img-blue';}
+			if (chess[0] ===  7) {return 'img-chess img-red';}
+			if (chess[0] ===  6) {return 'img-chess img-red';}
+			if (chess[0] ===  5) {return 'img-chess img-red';}
+			if (chess[0] ===  4) {return 'img-chess img-red';}
+			if (chess[0] ===  3) {return 'img-chess img-red';}
+			if (chess[0] ===  2) {return 'img-chess img-red';}
+			if (chess[0] ===  1) {return 'img-chess img-red';}
 		}
 	},
 
@@ -109,7 +110,8 @@ Demo = {
 			Demo.setupInvalidList();
 			Demo.btnPlay.prop('disabled', false);
 			Demo.spanPlay.html('');
-			Demo.playing = dt.step.length - 1;
+			// Demo.playing = dt.step.length - 1;
+			Demo.playing = 0;
 			Demo.isPause = true;
 			Demo.spanPlay.attr('class', 'glyphicon glyphicon-play');
 			Demo.setControls();
@@ -237,7 +239,7 @@ Demo = {
 			Demo.floatChess.attr('class', source.attr('class'));
 			Demo.floatChess.offset(source.offset());
 
-			source.attr('class', '');
+			source.attr('class', 'img-chess img-blank');
 
 			Demo.floatChess.animate(target.offset(), Demo.interval, function() {
 				target.attr('class', Demo.floatChess.attr('class'));
