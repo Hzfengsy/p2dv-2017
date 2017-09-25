@@ -6,8 +6,8 @@ Demo = {
 	playing   : undefined,
 	pause     : undefined,
 	timeoutID : undefined,
-	hight     : 4,
-	width     : 8,
+	hight     : 9,
+	width     : 9,
 
 	// DOM:
 	board     : undefined,
@@ -20,6 +20,10 @@ Demo = {
 	spanNext  : undefined,
 	spanPlay  : undefined,
 	spanPrev  : undefined,
+	x1        : 0,
+	y1        : 4,
+	x2        : 8,
+	y2        : 4,
 
 	//Demo Runtime Data
 	oldBoard : undefined,
@@ -53,39 +57,43 @@ Demo = {
 				Demo.getBox(i, j).attr('class', 'img-chess img-blank');
 			}
 		}
+		Demo.getBox(0, 4).attr('class', 'img-chess img-red');
+		Demo.getBox(8, 4).attr('class', 'img-chess img-blue');
 	},
 
-	getImg : function getImg(chess) {
-		if (chess[0] ===  0) {
-			return '';
-		}
-		if (chess[1] === true && Demo.hideChess === true) {
-			return 'img-chess img-blank';
-		} else {
-			if (chess[0] === -7) {return 'img-chess img-blue';}
-			if (chess[0] === -6) {return 'img-chess img-blue';}
-			if (chess[0] === -5) {return 'img-chess img-blue';}
-			if (chess[0] === -4) {return 'img-chess img-blue';}
-			if (chess[0] === -3) {return 'img-chess img-blue';}
-			if (chess[0] === -2) {return 'img-chess img-blue';}
-			if (chess[0] === -1) {return 'img-chess img-blue';}
-			if (chess[0] ===  7) {return 'img-chess img-red';}
-			if (chess[0] ===  6) {return 'img-chess img-red';}
-			if (chess[0] ===  5) {return 'img-chess img-red';}
-			if (chess[0] ===  4) {return 'img-chess img-red';}
-			if (chess[0] ===  3) {return 'img-chess img-red';}
-			if (chess[0] ===  2) {return 'img-chess img-red';}
-			if (chess[0] ===  1) {return 'img-chess img-red';}
-		}
-	},
+	// getImg : function getImg(chess) {
+	// 	if (chess[0] ===  0) {
+	// 		return '';
+	// 	}
+	// 	if (chess[1] === true && Demo.hideChess === true) {
+	// 		return 'img-chess img-blank';
+	// 	} else {
+	// 		if (chess[0] === -7) {return 'img-chess img-blue';}
+	// 		if (chess[0] === -6) {return 'img-chess img-blue';}
+	// 		if (chess[0] === -5) {return 'img-chess img-blue';}
+	// 		if (chess[0] === -4) {return 'img-chess img-blue';}
+	// 		if (chess[0] === -3) {return 'img-chess img-blue';}
+	// 		if (chess[0] === -2) {return 'img-chess img-blue';}
+	// 		if (chess[0] === -1) {return 'img-chess img-blue';}
+	// 		if (chess[0] ===  7) {return 'img-chess img-red';}
+	// 		if (chess[0] ===  6) {return 'img-chess img-red';}
+	// 		if (chess[0] ===  5) {return 'img-chess img-red';}
+	// 		if (chess[0] ===  4) {return 'img-chess img-red';}
+	// 		if (chess[0] ===  3) {return 'img-chess img-red';}
+	// 		if (chess[0] ===  2) {return 'img-chess img-red';}
+	// 		if (chess[0] ===  1) {return 'img-chess img-red';}
+	// 	}
+	// },
 
 	flushBoard : function flushBoard() {
+		// to do
 		for (var i = 0; i < Demo.hight; ++i) {
 			for (var j = 0; j < Demo.width; ++j) {
-				var img = Demo.getImg(oldBoard[Demo.playing][i][j]);
-				Demo.getBox(i, j).attr('class', img);
+				Demo.getBox(i, j).attr('class', 'img-chess img-blank');
 			}
 		}
+		Demo.getBox(oldPos[Demo.playing][0], oldPos[Demo.playing][1]).attr('class', 'img-chess img-red');
+		Demo.getBox(oldPos[Demo.playing][2], oldPos[Demo.playing][3]).attr('class', 'img-chess img-blue');
 	},
 
 	setupInvalidList: function setupInvalidList() {
@@ -143,7 +151,7 @@ Demo = {
 		var i = Demo.playing;
 		var step = Demo.data.step[i];
 
-		if (i%2 === 0) {
+		if (i % 2 === 0) {
 			Demo.demoText.attr('class', 'bg-red');
 		} else {
 			Demo.demoText.attr('class', 'bg-black');
@@ -156,10 +164,10 @@ Demo = {
 		if ('err' in step) {
 			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Error: ' + step.err);
 			Demo.demoText.attr('class', 'bg-warning');
-		} else if (step.posx == step.tox && step.posy == step.toy) {
-			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Flipped (' + step.posx + ',' + step.posy + ')');
+		} else if (step.kind == 'wall') {
+			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Walled (' + step.x + ',' + step.y + ')');
 		} else {
-			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Moved (' + step.posx + ',' + step.posy + ') to (' + step.tox + ',' + step.toy + ')');
+			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Moved to (' + step.x + ',' + step.y + ')');
 		}
 	},
 
@@ -190,45 +198,64 @@ Demo = {
 	},
 
 	prepare : function prepare() {
-		var curBoard = [[],[],[],[]];
-		for (var i = 0; i < Demo.hight; ++i) {
-			for (var j = 0; j < Demo.width; ++j) {
-				if (Demo.data["init-board"][i][j].color == 0) {
-					curBoard[i].push([Demo.data["init-board"][i][j].kind + 1, true]);
-				} else if (Demo.data["init-board"][i][j].color == 1) {
-					curBoard[i].push([-(Demo.data["init-board"][i][j].kind + 1), true]);
-				}
-			}
-		}
+		var curBoard = [];
+		for (var i = 0; i < 16; i++) curBoard.push([]);
+		var curPos = [];
+		// for (var i = 0; i < Demo.hight; ++i) {
+		// 	for (var j = 0; j < Demo.width; ++j) {
+		// 		if (Demo.data["init-board"][i][j].color == 0) {
+		// 			curBoard[i].push([Demo.data["init-board"][i][j].kind + 1, true]);
+		// 		} else if (Demo.data["init-board"][i][j].color == 1) {
+		// 			curBoard[i].push([-(Demo.data["init-board"][i][j].kind + 1), true]);
+		// 		}
+		// 	}
+		// }
+		for (var i = 0; i < 16; i++)
+			for (var j = 0; j < 8; j++)
+				curBoard[i].push(false);
+		curPos = [0, 4, 8, 4];
+		
 		oldBoard = [];
+		oldPos = [];
+		oldBoard.push(Demo.cloneObject(curBoard));
+		oldPos.push(Demo.cloneObject(curPos));
 		for (var i = 0; i < Demo.data.step.length; ++i) {
 			if (!('err' in Demo.data.step[i])) {
-				var x = Demo.data.step[i].posx;
-				var y = Demo.data.step[i].posy;
-				var xx = Demo.data.step[i].tox;
-				var yy = Demo.data.step[i].toy;
-				if (x == xx && y == yy) {
-					curBoard[x][y][1] = false;
+				var kind = Demo.data.step[i].kind;
+				var x = Demo.data.step[i].x;
+				var y = Demo.data.step[i].y;
+				if (kind == 'wall') {
+					if (x % 2 == 0) {
+						curBoard[x][y] = true;
+						curBoard[x + 2][y] = true;
+					}
+					else {
+						curBoard[x][y] = true;
+						curBoard[x][y + 1] = true;
+					}
+				} else if(kind == 'red') {
+					curPos[0] = x;
+					curPos[1] = y;
 				} else {
-					curBoard[xx][yy] = Demo.cloneObject(curBoard[x][y]);
-					curBoard[x][y] = [0, false];
+					curPos[2] = x;
+					curPos[3] = y;
 				}
 			}
 			oldBoard.push(Demo.cloneObject(curBoard));
+			oldPos.push(Demo.cloneObject(curPos));
 		}
 
 		function set_ai_color_span(id, jdom) {
 			if (id == 0) jdom.attr('class', 'label label-danger').html('红');
-			else jdom.attr('class', 'label bg-black').html('黑');
+			else jdom.attr('class', 'label bg-black').html('蓝');
 		}
 		set_ai_color_span(Demo.data.id[0], $('#span-ai0-color'));
 		set_ai_color_span(Demo.data.id[1], $('#span-ai1-color'));
 	},
 
-	moveChess: function moveChess(sx, sy, tx, ty) {
-		var source = Demo.getBox(sx, sy);
-		var target = Demo.getBox(tx, ty);
-		if (sx == tx && sy == ty) {
+	moveChess: function moveChess(kind, x, y) {
+		if (kind == 'wall') {
+			// to do
 			target.attr('class', Demo.getImg(oldBoard[Demo.playing][tx][ty]));
 			Demo.setControls();
 			if (!Demo.isPause) {
@@ -236,7 +263,19 @@ Demo = {
 				Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
 			}
 		} else {
-			Demo.floatChess.attr('class', source.attr('class'));
+			if (kind == 'red') {
+				var sx = oldPos[Demo.playing][0];
+				var sy = oldPos[Demo.playing][1];
+				var img = 'img-chess img-red';
+			}
+			else {
+				var sx = oldPos[Demo.playing][2];
+				var sy = oldPos[Demo.playing][3];
+				var img = 'img-chess img-blue';
+			}
+			var source = Demo.getBox(sx, sy);
+			var target = Demo.getBox(x, y);
+			Demo.floatChess.attr('class', img);
 			Demo.floatChess.offset(source.offset());
 
 			source.attr('class', 'img-chess img-blank');
@@ -265,12 +304,11 @@ Demo = {
 
 		Demo.updateText();
 
-		Demo.moveChess(step.posx, step.posy, step.tox, step.toy);
+		Demo.moveChess(step.kind, step.x, step.y);
 	},
 
 	drawNext: function drawNext() {
 
-		++Demo.playing;
 		var i = Demo.playing;
 		var step = Demo.data.step[i];
 
@@ -280,8 +318,9 @@ Demo = {
 			return;
 		}
 
-		Demo.moveChess(step.posx, step.posy, step.tox, step.toy);
+		Demo.moveChess(step.kind, step.x, step.y);
 		Demo.updateText();
+		++Demo.playing;
 
 	},
 
@@ -310,8 +349,8 @@ Demo = {
 			Demo.btnNext.prop('disabled', true);
 			Demo.btnPlay.prop('disabled', true);
 			Demo.btnPrev.prop('disabled', true);
-			--Demo.playing;
 			setTimeout(Demo.drawPrev, 0);
+			--Demo.playing;
 		}
 		$(this).blur();
 		return false;
@@ -322,7 +361,7 @@ Demo = {
 		Demo.demoPlayed = true;
 		if (Demo.isPause) {
 			Demo.isPause = false;
-			++Demo.playing;
+			// ++Demo.playing;
 			Demo.spanPlay.attr('class', 'glyphicon glyphicon-pause');
 			Demo.btnPrev.attr('disabled', true);
 			Demo.btnNext.attr('disabled', true);
@@ -364,25 +403,25 @@ Demo = {
 		$("#btn-speed-normal").on('click', function(){Demo.interval=200});
 		$("#btn-speed-fast")  .on('click', function(){Demo.interval= 50});
 
-		$("#btn-chess-show").on('click', function(){
-			Demo.hideChess = false;
-			if (Demo.demoPlayed === false) {
-				Demo.playing = 0;
-				Demo.flushBoard();
-				Demo.playing = Demo.data.step.length - 1;
-			} else {
-				Demo.flushBoard();
-			}
-		});
-		$("#btn-chess-hide").on('click', function(){
-			Demo.hideChess =  true;
-			if (Demo.demoPlayed === false) {
-				console.log("~~~");
-				Demo.putChess();
-			} else {
-				Demo.flushBoard();
-			}
-		});
+		// $("#btn-chess-show").on('click', function(){
+		// 	Demo.hideChess = false;
+		// 	if (Demo.demoPlayed === false) {
+		// 		Demo.playing = 0;
+		// 		Demo.flushBoard();
+		// 		Demo.playing = Demo.data.step.length - 1;
+		// 	} else {
+		// 		Demo.flushBoard();
+		// 	}
+		// });
+		// $("#btn-chess-hide").on('click', function(){
+		// 	Demo.hideChess =  true;
+		// 	if (Demo.demoPlayed === false) {
+		// 		console.log("~~~");
+		// 		Demo.putChess();
+		// 	} else {
+		// 		Demo.flushBoard();
+		// 	}
+		// });
 	},
 
 	setup: function setup(jsonURL) {

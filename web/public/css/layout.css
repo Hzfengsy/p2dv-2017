@@ -59,7 +59,7 @@ textarea, input[type="text"], input[type="password"] {
 }
 
 .bg-black {
-  background-color: #444444;
+  background-color: #375a7f;
 }
 
 .bg-red {
@@ -69,7 +69,7 @@ textarea, input[type="text"], input[type="password"] {
 /* ==================== Chess Board ==================== */
 
 #chess-board {
-  border: 5px solid #444444;
+  border: 0px solid #444444;
 }
 
 #chess-board td {
