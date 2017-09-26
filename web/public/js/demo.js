@@ -20,10 +20,6 @@ Demo = {
 	spanNext  : undefined,
 	spanPlay  : undefined,
 	spanPrev  : undefined,
-	x1        : 0,
-	y1        : 4,
-	x2        : 8,
-	y2        : 4,
 
 	//Demo Runtime Data
 	oldBoard : undefined,
@@ -86,7 +82,6 @@ Demo = {
 	// },
 
 	flushBoard : function flushBoard() {
-		// to do
 		for (var i = 0; i < Demo.hight; ++i) {
 			for (var j = 0; j < Demo.width; ++j) {
 				Demo.getBox(i, j).attr('class', 'img-chess img-blank');
@@ -94,6 +89,16 @@ Demo = {
 		}
 		Demo.getBox(oldPos[Demo.playing][0], oldPos[Demo.playing][1]).attr('class', 'img-chess img-red');
 		Demo.getBox(oldPos[Demo.playing][2], oldPos[Demo.playing][3]).attr('class', 'img-chess img-blue');
+		for (var i = 0; i < Demo.hight - 1; ++i) {
+			for (var j = 0; j < Demo.width - 1; ++j) {
+				if (oldBoard[Demo.playing][i * 2][j]) {
+					Demo.getBox(i, j).addClass('right-line')
+				}
+				if (oldBoard[Demo.playing][i * 2 + 1][j]){
+					Demo.getBox(i, j).addClass('bottom-line')
+				}
+			}
+		}
 	},
 
 	setupInvalidList: function setupInvalidList() {
@@ -106,7 +111,7 @@ Demo = {
 		    var step = Demo.data.step[i];
 		    if ('err' in step) {
 		        var info = step.err || 'Invalid Operation! (No Details)';
-		        ul.append('<li class="list-group-item"><strong>[Step ' + (i+1) + ']AI' + (i%2) + '</strong> ' + info + '</li>');
+		        ul.append('<li class="list-group-item"><strong>[Step ' + (i+1) + '] AI' + (i%2) + '</strong> ' + info + '</li>');
 		    }
 		}
 	},
@@ -162,12 +167,12 @@ Demo = {
 		}
 
 		if ('err' in step) {
-			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Error: ' + step.err);
+			Demo.demoText.html('<strong>[Step ' + (i+1) + '] AI' + (i % 2) + '</strong> Error: ' + step.err);
 			Demo.demoText.attr('class', 'bg-warning');
 		} else if (step.kind == 'wall') {
-			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Walled (' + step.x + ',' + step.y + ')');
+			Demo.demoText.html('<strong>[Step ' + (i+1) + '] AI' + (i % 2) + '</strong> Walled (' + step.x + ',' + step.y + ')');
 		} else {
-			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Moved to (' + step.x + ',' + step.y + ')');
+			Demo.demoText.html('<strong>[Step ' + (i+1) + '] AI' + (i % 2) + '</strong> Moved to (' + step.x + ',' + step.y + ')');
 		}
 	},
 
@@ -199,19 +204,10 @@ Demo = {
 
 	prepare : function prepare() {
 		var curBoard = [];
-		for (var i = 0; i < 16; i++) curBoard.push([]);
-		var curPos = [];
-		// for (var i = 0; i < Demo.hight; ++i) {
-		// 	for (var j = 0; j < Demo.width; ++j) {
-		// 		if (Demo.data["init-board"][i][j].color == 0) {
-		// 			curBoard[i].push([Demo.data["init-board"][i][j].kind + 1, true]);
-		// 		} else if (Demo.data["init-board"][i][j].color == 1) {
-		// 			curBoard[i].push([-(Demo.data["init-board"][i][j].kind + 1), true]);
-		// 		}
-		// 	}
-		// }
-		for (var i = 0; i < 16; i++)
-			for (var j = 0; j < 8; j++)
+		for (var i = 0; i < 17; i++) curBoard.push([]);
+		var curPos = [];8
+		for (var i = 0; i < 17; i++)
+			for (var j = 0; j < 7; j++)
 				curBoard[i].push(false);
 		curPos = [0, 4, 8, 4];
 		
@@ -255,8 +251,15 @@ Demo = {
 
 	moveChess: function moveChess(kind, x, y) {
 		if (kind == 'wall') {
-			// to do
-			target.attr('class', Demo.getImg(oldBoard[Demo.playing][tx][ty]));
+			var xx = parseInt(x / 2);
+			if (x % 2 == 0) {
+				Demo.getBox(xx, y).addClass('right-line');
+				Demo.getBox(xx + 1, y).addClass('right-line');
+			}
+			else {
+				Demo.getBox(xx, y).addClass('bottom-line');
+				Demo.getBox(xx, y + 1).addClass('bottom-line');
+			}
 			Demo.setControls();
 			if (!Demo.isPause) {
 				++Demo.playing;
@@ -279,9 +282,13 @@ Demo = {
 			Demo.floatChess.offset(source.offset());
 
 			source.attr('class', 'img-chess img-blank');
+			if (sy < 8 && oldBoard[Demo.playing][sx * 2][sy]) source.addClass('right-line');
+			if (sx < 8 && oldBoard[Demo.playing][sx * 2 + 1][sy]) source.addClass('bottom-line');
 
 			Demo.floatChess.animate(target.offset(), Demo.interval, function() {
 				target.attr('class', Demo.floatChess.attr('class'));
+				if (y < 8 && oldBoard[Demo.playing][x * 2][y]) target.addClass('right-line');
+				if (x < 8 && oldBoard[Demo.playing][x * 2 + 1][y]) target.addClass('bottom-line');
 				Demo.floatChess.addClass('hidden');
 				Demo.setControls();
 				if (!Demo.isPause) {

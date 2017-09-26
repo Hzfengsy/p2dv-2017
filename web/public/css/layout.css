@@ -97,6 +97,10 @@ textarea, input[type="text"], input[type="password"] {
   border-right: 5px solid #000;
 }
 
+.bottom-line {
+  border-bottom: 5px solid #000;
+}
+
 .img-chess {
   background-image: url(/images/chess.png);
 }

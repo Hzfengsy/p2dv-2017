@@ -36,6 +36,7 @@ class Battle:
     def _runBattle(self):
         # Prepare path
         path_judge = path.join(self.tmpdir, 'judge', 'main.py')
+        print path_judge
         path_ai0 = path.join(self.tmpdir, 'ai0')
         path_ai1 = path.join(self.tmpdir, 'ai1')
 
