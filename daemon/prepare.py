@@ -6,6 +6,7 @@ import glob
 from os import path
 
 import const
+include_path = '/home/p2dv/judge/sample/'
 
 class Prepare:
     def _compile(self):
@@ -19,7 +20,7 @@ class Prepare:
 
         # Compile
         target = path.join(self.tmpdir, 'client')
-        cflags = ['g++', '-Wall', '-O2', '-std=c++11', '-o', target, source]
+        cflags = ['g++', '-Wall', '-O2', '-std=c++11', '-o', target, source, '-I' + include_path]
         child = subprocess32.Popen(cflags, stdout=subprocess32.PIPE, stderr=subprocess32.PIPE)
         self.compile_stdout, self.compile_stderr = child.communicate()
         exitcode = child.returncode
