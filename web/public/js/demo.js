@@ -1,4 +1,4 @@
-Demo = {
+﻿Demo = {
 	// Variables:
 	interval  : 200,
 	hideChess : true,
@@ -135,10 +135,10 @@ Demo = {
 		var i = Demo.playing;
 		var step = Demo.data.step;
 		if (Demo.isPause) {
-			if (i === 0 && i < step.length-1) {
+			if (i === 0 && i < step.length - 1) {
 				Demo.btnPrev.prop('disabled', true);
 				Demo.btnNext.prop('disabled', false);
-			} else if (0 < i && i === step.length-1) {
+			} else if (0 < i && i === step.length) {
 				Demo.btnPrev.prop('disabled', false);
 				Demo.btnNext.prop('disabled', true);
 			} else {
@@ -263,7 +263,7 @@ Demo = {
 			Demo.setControls();
 			if (!Demo.isPause) {
 				++Demo.playing;
-				Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
+				Demo.timeoutID = setTimeout(Demo.draw, Demo.interval * 3);
 			}
 		} else {
 			if (kind == 'red') {

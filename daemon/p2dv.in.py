@@ -157,6 +157,7 @@ class Daemon:
         result = Battle(server, ai0, ai1, updater, text_uploader).Run()
 
         # Prepare documents
+        print ("Prepare documents")
         doc_ai0 = {'$set':{'name':result['user'][0]}}
         doc_ai1 = {'$set':{'name':result['user'][1]}}
         doc_rec = {'$set':{

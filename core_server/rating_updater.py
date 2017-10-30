@@ -10,7 +10,7 @@ from bson.objectid import ObjectId
 
 class Updater:
     def _initDB(self):
-        client = pymongo.MongoClient('localhost', 27017, w=1)
+        client = pymongo.MongoClient('localhost', 27017, w = 1)
         self.db = client['p2dvin']
 
     def _setupRatings(self):
@@ -23,7 +23,7 @@ class Updater:
             self.db.userratings.insert({'id': user['_id'], 'rating': 1500, 'date': user['registerDate']})
 
         self.db.updater.insert({'id': ObjectId('000000000000000000000000'), 'type': 'lastid'})
-        self.db.updater.insert({'value': 1448553600, 'type': 'timestamp'})
+        self.db.updater.insert({'value': time.mktime(time.strptime("2017.10-01 00:00","%Y.%m-%d %H:%M")), 'type': 'timestamp'})
 
     def _updateRating(self, timestamp):
         lastid = self.lastid
@@ -91,6 +91,9 @@ class Updater:
                     UserRatingList[rec['user1']] = r1
                     cnt2 += 1
 
+                if self.lastrow == len(self.records) - 1:
+                    self.lastrow += 1
+
         dt = datetime.fromtimestamp(timestamp)
         for aid in AIRatingList:
             self.db.airatings.insert({'id': ObjectId(aid), 'rating': AIRatingList[aid], 'date': dt})
@@ -130,6 +133,7 @@ class Updater:
         while timestamp < timebound:
             if self.records[self.lastrow]['status'] != 'Finished':
                 break
+                # continue
             if lasttime <= timestamp:
                 res = self._updateRating(timestamp)
                 if self.lastrow == len(self.records):
@@ -144,6 +148,7 @@ class Updater:
         self.db.updater.update({'type': 'timestamp'}, {'$set': {'value': timestamp}})
         os.remove('/tmp/rating_updater.lock')
 
-
+print "running"
 updater = Updater()
 updater.Run()
+print "finished"
